@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicsPainter.GraphicsPainterController">
+   <children>
+      <ToolBar layoutX="77.0" layoutY="180.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <TitledPane text="Shapes">
+              <content>
+                  <VBox spacing="10.0">
+                     <children>
+                        <RadioButton fx:id="rectButton" mnemonicParsing="false" onAction="#setRectangleAsCurrentShape" text="Rectangle">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="shapeToggleGroup" />
+                           </toggleGroup></RadioButton>
+                        <RadioButton fx:id="ovalButton" mnemonicParsing="false" onAction="#setOvalAsCurrentShape" text="Oval" toggleGroup="$shapeToggleGroup" />
+                        <RadioButton fx:id="lineButton" mnemonicParsing="false" onAction="#setLineAsCurrentShape" text="Line" toggleGroup="$shapeToggleGroup" />
+                        <RadioButton fx:id="pencilButton" mnemonicParsing="false" onAction="#setFreeDesign" selected="true" text="Pencil" toggleGroup="$shapeToggleGroup" />
+                     </children>
+                  </VBox>
+              </content>
+            </TitledPane>
+            <ColorPicker fx:id="colorPick" maxWidth="1.7976931348623157E308">
+               <value>
+                  <Color />
+               </value>
+            </ColorPicker>
+            <RadioButton fx:id="strokeRB" mnemonicParsing="false" selected="true" text="Stroke">
+               <toggleGroup>
+                  <ToggleGroup fx:id="shapes" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="fillRB" mnemonicParsing="false" text="Fill" toggleGroup="$shapes" />
+            <Slider fx:id="sizeSlider" prefHeight="14.0" prefWidth="59.0" />
+            <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#clearCanvas" text="Clear" />
+        </items>
+      </ToolBar>
+      <Canvas fx:id="theCanvas" height="400.0" width="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Canvas fx:id="canvasGo" height="400.0" onMouseDragged="#onMouseDraggedListener" onMousePressed="#onMousePressedListener" onMouseReleased="#onMouseReleaseListener" width="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   </children>
+</AnchorPane>
