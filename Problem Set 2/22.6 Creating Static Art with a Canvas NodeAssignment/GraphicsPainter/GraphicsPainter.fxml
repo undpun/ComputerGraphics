@@ -31,6 +31,7 @@
                   </VBox>
               </content>
             </TitledPane>
+            <RadioButton fx:id="eraser" mnemonicParsing="false" onAction="#setEraser" text="Eraser" toggleGroup="$shapeToggleGroup" />
             <ColorPicker fx:id="colorPick" maxWidth="1.7976931348623157E308">
                <value>
                   <Color />
