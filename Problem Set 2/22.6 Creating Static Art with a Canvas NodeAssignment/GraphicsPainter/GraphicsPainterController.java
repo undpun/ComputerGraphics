@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,15 +16,18 @@ public class GraphicsPainterController implements Initializable {
     public ToggleGroup shapes;
     double startX, startY, lastX, lastY, oldX, oldY;
     private GraphicsContext gcB,gcF;
-    private boolean drawLine = false, drawOval = false, drawRectangle = false, freeDesign = true;
+    private boolean drawLine = false, drawOval = false, drawRectangle = false, freeDesign = true, erase = false;
 
     @FXML private ToggleGroup shapeToggleGroup;
     @FXML private Slider sizeSlider;
     @FXML private ColorPicker colorPick;
     @FXML private RadioButton strokeRB, fillRB;
     @FXML private Canvas theCanvas, canvasGo;
-    @FXML private RadioButton rectButton, lineButton, ovalButton, pencilButton;
+    @FXML private RadioButton rectButton, lineButton, ovalButton, pencilButton, eraser;
     @FXML private Button clearButton;
+
+//    @FXML ResizableCanvas theCanvas = new ResizableCanvas();
+//    @FXML ResizableCanvas canvasGo = new ResizableCanvas();
 
     @FXML
     private void onMousePressedListener(MouseEvent e){
@@ -31,6 +35,8 @@ public class GraphicsPainterController implements Initializable {
         this.startY = e.getY();
         this.oldX = e.getX();
         this.oldY = e.getY();
+        if(erase)
+            eraseArea(e.getX(),e.getY());
     }
 
     @FXML
@@ -46,6 +52,8 @@ public class GraphicsPainterController implements Initializable {
             drawLineEffect();
         if(freeDesign)
             freeDrawing();
+        if(erase)
+            eraseArea(e.getX(),e.getY());
     }
 
     @FXML
@@ -56,6 +64,7 @@ public class GraphicsPainterController implements Initializable {
             drawOval();
         if(drawLine)
             drawLine();
+        gcF.clearRect(0, 0, canvasGo.getWidth(), canvasGo.getHeight());
     }
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>Draw methods<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -161,6 +170,15 @@ public class GraphicsPainterController implements Initializable {
         gcF.clearRect(0, 0, theCanvas.getWidth(), theCanvas.getHeight());
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    //>>>>>>>>>>>>>>>>>>>>>Eraser<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    private void eraseArea(double x, double y) {
+        double size = sizeSlider.getValue();
+        gcB.clearRect(x - (size/2), y - (size/2), size, size);
+    }
+
+    ///////////////////////////////////////////////////////////////////////
     //>>>>>>>>>>>>>>>>>>>>>Buttons control<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @FXML
     private void setOvalAsCurrentShape(ActionEvent e)
@@ -169,6 +187,7 @@ public class GraphicsPainterController implements Initializable {
         drawOval = true;
         drawRectangle = false;
         freeDesign = false;
+        erase = false;
     }
 
     @FXML
@@ -178,6 +197,7 @@ public class GraphicsPainterController implements Initializable {
         drawOval = false;
         drawRectangle = false;
         freeDesign = false;
+        erase = false;
     }
     @FXML
     private void setRectangleAsCurrentShape(ActionEvent e)
@@ -186,6 +206,7 @@ public class GraphicsPainterController implements Initializable {
         drawOval = false;
         freeDesign = false;
         drawRectangle = true;
+        erase = false;
     }
 
     @FXML
@@ -195,6 +216,17 @@ public class GraphicsPainterController implements Initializable {
         drawOval = false;
         drawRectangle = false;
         freeDesign = true;
+        erase = false;
+    }
+
+    @FXML
+    private void setEraser(ActionEvent e)
+    {
+        drawLine = false;
+        drawOval = false;
+        drawRectangle = false;
+        freeDesign = false;
+        erase = true;
     }
 
     //////////////////////////////////////////////////////////////////
@@ -206,5 +238,43 @@ public class GraphicsPainterController implements Initializable {
 
         sizeSlider.setMin(1);
         sizeSlider.setMax(7);
+    }
+
+    //////////////////////////////////////////////////////////////////
+
+    static class ResizableCanvas extends Canvas {
+
+        public ResizableCanvas() {
+            // Redraw canvas when size changes.
+            widthProperty().addListener(evt -> draw());
+            heightProperty().addListener(evt -> draw());
+        }
+
+        private void draw() {
+            double width = getWidth();
+            double height = getHeight();
+
+            GraphicsContext gc = getGraphicsContext2D();
+            gc.clearRect(0, 0, width, height);
+
+            gc.setStroke(Color.RED);
+            gc.strokeLine(0, 0, width, height);
+            gc.strokeLine(0, height, width, 0);
+        }
+
+        @Override
+        public boolean isResizable() {
+            return true;
+        }
+
+        @Override
+        public double prefWidth(double height) {
+            return getWidth();
+        }
+
+        @Override
+        public double prefHeight(double width) {
+            return getHeight();
+        }
     }
 }
